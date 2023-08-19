@@ -4,6 +4,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import logout, login, authenticate
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 
 
 from .models import Usuario
@@ -16,6 +17,7 @@ def vista_index(request):
     if request.user.is_authenticated:
         cuentaActiva = True
         messages.success(request, f'Cuenta activa : {request.user.username}')
+    
     return render(request, 'index.html', { 'cuentaActiva': cuentaActiva }) 
 
 def vista_clientes(request):
@@ -23,6 +25,9 @@ def vista_clientes(request):
     if request.user.is_authenticated:
         messages.success(request, f'Cuenta activa : {request.user.username}')
         cuentaActiva = True
+    else:
+        messages.error(request, 'Usuario no autorizado')
+        return redirect('index')
     clientes = Usuario.objects.all()
 
 
@@ -34,6 +39,9 @@ def vista_registroCliente(request):
     if request.user.is_authenticated:
         messages.success(request, f'Cuenta activa : {request.user.username}')
         cuentaActiva = True
+    else:
+        messages.error(request, 'Usuario no autorizado')
+        return redirect('index')
     if request.method == 'POST':
         form = UsuarioForm(request.POST) 
         if form.is_valid():
@@ -85,13 +93,32 @@ def vista_login(request):
     # )
     return render(request, 'login.html', {'form':form})
 
-def registrar_usuario(request):
+def vista_registroUsuarioUsuario(request):
+    cuentaActiva = False
+    if request.user.is_authenticated:
+        messages.success(request, f'Cuenta activa : {request.user.username}')
+        cuentaActiva = True
+    else:
+        messages.error(request, 'Usuario no autorizado')
+        return redirect('index')
     if request.method == 'POST':
         form = FormularioRegistroUsuario(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('usuarios')
+            return redirect('index')
     else:
         form = FormularioRegistroUsuario()
-    return render(request, 'registro_usuario.html', {'form':form})
+    return render(request, 'registro_usuario.html', {'form':form ,'cuentaActiva': cuentaActiva})
 
+def lista_usuarios(request):
+    # "Vista para renderizar la página donde se mostrarán los datos de usuarios"
+    # if not request.user.is_authenticated: return render(request, 'index.html')
+    cuentaActiva = False
+    if request.user.is_authenticated:
+        messages.success(request, f'Cuenta activa : {request.user.username}')
+        cuentaActiva = True
+    else:
+        messages.error(request, 'Usuario no autorizado')
+        return redirect('index')
+    usuarios = User.objects.all()
+    return render(request, 'usuarios.html', {'usuarios': usuarios,'cuentaActiva': cuentaActiva})

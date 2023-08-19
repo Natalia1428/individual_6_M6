@@ -1,7 +1,9 @@
-{% extends 'base.html' %}
+{% extends 'base/base.html' %}
 {% load static %}
 
-{% block contenido %}
+{% block title %}Registro Usuario{% endblock %}
+
+{% block content %}
 <div class="col-md-6 offset-md-3">
     <h1 class='text-center mt-2 mb-5'> REGISTRO DE USUARIOS </h1>
     <form action="" method="POST">
@@ -22,4 +24,4 @@
         </div>
     </form>
 </div>
-{% endblock contenido %}
+{% endblock content %}
