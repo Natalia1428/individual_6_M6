@@ -93,7 +93,7 @@ def vista_login(request):
     # )
     return render(request, 'login.html', {'form':form})
 
-def vista_registroUsuarioUsuario(request):
+def vista_registroUsuario(request):
     cuentaActiva = False
     if request.user.is_authenticated:
         messages.success(request, f'Cuenta activa : {request.user.username}')
